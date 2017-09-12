@@ -1,5 +1,5 @@
 import java.util.Scanner;
-class Converer
+class Converter
 {
     
     public static void main(String [] args){
@@ -15,7 +15,7 @@ class Converer
         for(int i = 0; i<infix.length(); i++){
             
             char current = infix.charAt(i);
-        
+            System.out.println(i+" "+stack.toString()+" "+postfix);
             if(isOperand(current)){
                 postfix += current;
             }else if(current=='('){
@@ -29,9 +29,11 @@ class Converer
                 }else
                     error = true;
             }else if (isOperator(current)){
-                if(!stack.isEmpty() && (current==stack.peek() || ((current=='-'|| current=='+') && (stack.peek()=='*' || stack.peek()=='/'))))
-                    postfix+=stack.pop();
-                stack.push(current);
+               while( !stack.isEmpty() && !(stack.peek()=='(') && precedence(stack.peek()) >= precedence(current) ){
+                   //if(precedence(stack.peek()) >= precedence(current))
+                        postfix += stack.pop();
+               }
+               stack.push(current);
             }
         }
         while(!stack.isEmpty()) //gets every thing out of the stack
@@ -41,6 +43,19 @@ class Converer
         
     }
     
+    public static int precedence(char c){
+        /*
+        * and / = 1
+        + and - = 0
+        */
+        
+        if(c == '*' || c == '/')
+            return 1;
+        else
+            return 0;
+        
+        
+    }
     public static boolean isOperand(char c){
         
         if( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') )
